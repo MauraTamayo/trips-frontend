@@ -4,7 +4,8 @@ import {
   Button,
   Typography,
   Box,
-  MenuItem
+  MenuItem, 
+  Select
 } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import Grid from '@mui/material/Grid2';
@@ -12,14 +13,8 @@ import { useRouter } from 'next/router';
 import {register} from './authService';
 
 const roles = [
-  {
-    value: 'user',
-    label: 'Usuario',
-  },
-  {
-    value: 'mod',
-    label: 'Moderador',
-  },
+  { value: 'user', label: 'Usuario' },
+  { value: 'mod', label: 'Moderador' },
 ];
 
 const ContainerBoxStyled = styled(Box)(() => ({
@@ -66,16 +61,23 @@ const Signup = () => {
     username: '',
     email: '',
     password: '',
-    role: 'user' // Valor inicial por defecto
+    role: []
   });
   const [error, setError] = useState(null);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
+    if (name === "role") {
+      setFormData((prev) => ({
+        ...prev,
+        [name]: typeof value === "string" ? value.split(',') : value,
+      }));
+    } else {
+      setFormData((prev) => ({
+        ...prev,
+        [name]: value,
+      }));
+    }
   };
 
   const handleSubmit = async (e) => {
@@ -84,8 +86,7 @@ const Signup = () => {
       await register(formData);
       router.push('/login');
     } catch (error) {
-      console.error("Error en el registro:", error);
-      setError("Error al registrar. Intente de nuevo.");
+      setError(error.message); // Muestra el mensaje específico del error
     }
   };
 
@@ -102,7 +103,7 @@ const Signup = () => {
         <FormGridStyled container rowSpacing={1} columnSpacing={{ xs: 1, sm: 2, md: 3 }}>
           <Grid size={6}>
             <TextFieldBoxStyled
-              id="username"
+              name="username"
               label="Nombre completo"
               variant="outlined"
               fullWidth
@@ -112,7 +113,7 @@ const Signup = () => {
           </Grid>
           <Grid size={6}>
             <TextFieldBoxStyled
-              id="email"
+              name="email"
               label="Correo electrónico"
               variant="outlined"
               fullWidth
@@ -122,7 +123,7 @@ const Signup = () => {
           </Grid>
           <Grid size={6}>
             <TextFieldBoxStyled
-              id="password"
+              name="password"
               label="Contraseña"
               variant="outlined"
               fullWidth
@@ -132,25 +133,24 @@ const Signup = () => {
             />
           </Grid>
           <Grid size={6}>
-            <TextField
-              id="role"
-              select
+          <Select
+              name="role"
+              multiple
               fullWidth
-              label="Rol"
               value={formData.role}
               onChange={handleChange}
-              helperText="Selecciona tu rol"
+              renderValue={(selected) => selected.join(', ')}
             >
-              {roles.map((option) => (
+             {roles.map((option) => (
                 <MenuItem key={option.value} value={option.value}>
                   {option.label}
                 </MenuItem>
               ))}
-            </TextField>
+            </Select>
           </Grid>
           <Grid size={6}>
             <TextFieldBoxStyled
-              id="country"
+              name="country"
               label="País"
               variant="outlined"
               fullWidth
@@ -159,7 +159,7 @@ const Signup = () => {
           </Grid>
           <Grid size={6}>
             <TextFieldBoxStyled
-              id="city"
+              name="city"
               label="Ciudad"
               variant="outlined"
               fullWidth
@@ -168,7 +168,7 @@ const Signup = () => {
           </Grid>
           <Grid size={6}>
             <TextFieldBoxStyled
-              id="address"
+              name="address"
               label="Dirección"
               variant="outlined"
               fullWidth
@@ -177,7 +177,7 @@ const Signup = () => {
           </Grid>
           <Grid size={6}>
             <TextFieldBoxStyled
-              id="phone"
+              name="phone"
               label="Celular"
               variant="outlined"
               fullWidth
@@ -186,7 +186,7 @@ const Signup = () => {
           </Grid>
         </FormGridStyled>
         
-        <StyledButton type="submit" variant="contained" color="primary" id="submit">
+        <StyledButton type="submit" variant="contained" color="primary">
           Registrar
         </StyledButton>
         

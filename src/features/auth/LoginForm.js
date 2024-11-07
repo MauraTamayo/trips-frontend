@@ -1,10 +1,8 @@
-// components/Login.js
-import React , { useState } from 'react';
+import React, { useState } from 'react';
 import { useRouter } from 'next/router';
-import { TextField, Checkbox, Button, Typography, Box, Link, Divider, form } from '@mui/material';
+import { TextField, Checkbox, Button, Typography, Box, Link, Divider } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import { login } from './authService';
-import { setToken } from '../../utils/jwt';
 
 const ContainerBoxStyled = styled(Box)(() => ({
   flexGrow: 1,
@@ -13,7 +11,6 @@ const ContainerBoxStyled = styled(Box)(() => ({
   justifyContent: 'center',
   alignItems: 'center',
   display: 'flex',
-  // fontFamily: '"Poppins", sans-serif'
 }));
 
 const BodyBoxStyled = styled(Box)(() => ({
@@ -22,9 +19,8 @@ const BodyBoxStyled = styled(Box)(() => ({
   alignItems: 'center',
   justifyContent: 'center',
   padding: '2rem',
-  backgroundColor: '#050E18', // Opcional: un fondo ligeramente diferente para el cuadro
-  // backgroundColor: 'rgba(255, 255, 255, 0.5)', // Opcional: un fondo ligeramente diferente para el cuadro
-  borderRadius: '8px', // Opcional: esquinas redondeadas
+  backgroundColor: '#050E18',
+  borderRadius: '8px',
   border: '0.5px solid #212938',
   width: '30rem'
 }));
@@ -59,49 +55,46 @@ const ButtomStyledLink = styled(Button)(() => ({
 }));
 
 const Login = () => {
-  const [credentials, setCredentials] = useState({
-    username: '',
-    password: '',
-  });
+  const [credentials, setCredentials] = useState({ username: '', password: '' });
   const [error, setError] = useState(null);
   const router = useRouter();
 
   const handleChange = (e) => {
-    setCredentials({ ...credentials, [e.target.name]: e.target.value });
+    const { name, value } = e.target;
+    setCredentials({ ...credentials, [name]: value });
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
       await login(credentials);
-      router.push('/dashboard'); // Redirige a dashboard o a la página que prefieras
+      router.push('/trips'); // Redirige a la página de viajes
     } catch (error) {
       setError('Error al iniciar sesión. Verifica tus credenciales.');
     }
   };
 
   return (
-    <ContainerBoxStyled id='hola' onSubmit={handleSubmit}>
+    <ContainerBoxStyled>
       <BodyBoxStyled>
         <h1 style={{ justifyContent: 'center', display: 'flex' }}>Bienvenido!</h1>
         <Typography variant="body4" gutterBottom>
           Iniciar sesión para continuar
         </Typography>
-        <FormBoxStyled>
+        <FormBoxStyled component="form" onSubmit={handleSubmit}>
           <TextFieldBoxStyled
-            label="Correo electronico"
-            submit
+            label="username"
             variant="outlined"
             fullWidth
             margin="normal"
             placeholder="tu@correo.com"
+            name="username"
             onChange={handleChange}
           />
           <Box sx={{ display: 'flex', justifyContent: 'end' }}>
             <Link
               component="button"
               type="button"
-              // onClick={handleClickOpen}
               variant="body2"
               sx={{ alignSelf: 'baseline' }}
             >
@@ -115,29 +108,28 @@ const Login = () => {
             fullWidth
             margin="normal"
             placeholder="••••••"
+            name="password"
             onChange={handleChange}
           />
           <Box sx={{ display: 'flex', alignItems: 'center', margin: '1rem 0' }}>
             <Checkbox />
             <Typography variant="body2">Acuérdate de mi</Typography>
           </Box>
-          <ButtomStyled fullWidth
-            variant="contained">
+          <ButtomStyled type="submit" fullWidth variant="contained">
             Iniciar sesión
           </ButtomStyled>
           <Typography variant="body2" sx={{ margin: '1rem 0' }}>
             ¿No tienes una cuenta? <Link href="/signup" style={{ color: '#1976d2' }}>Regístrate</Link>
           </Typography>
           <Divider>or</Divider>
-
           <ButtomStyledLink variant="outlined" fullWidth>
             Sign in with Google
           </ButtomStyledLink>
-
           <ButtomStyledLink variant="outlined" fullWidth>
             Sign in with Facebook
           </ButtomStyledLink>
         </FormBoxStyled>
+        {error && <Typography color="error" sx={{ marginTop: '1rem' }}>{error}</Typography>}
       </BodyBoxStyled>
     </ContainerBoxStyled>
   );
