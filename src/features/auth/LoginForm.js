@@ -1,3 +1,5 @@
+// "use client"
+
 import React, { useState } from 'react';
 import { useRouter } from 'next/router';
 import { TextField, Checkbox, Button, Typography, Box, Link, Divider } from '@mui/material';
@@ -68,7 +70,7 @@ const Login = () => {
     e.preventDefault();
     try {
       await login(credentials);
-      router.push('/trips'); // Redirige a la página de viajes
+      router.push('/hotels'); // Redirige a la página de viajes
     } catch (error) {
       setError('Error al iniciar sesión. Verifica tus credenciales.');
     }
