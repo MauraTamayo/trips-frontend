@@ -13,7 +13,6 @@ const authClient = axios.create({
 const hotelsClient = axios.create({
   baseURL: 'http://localhost:8088/api',
   headers: {
-    'Access-Control-Allow-Origin': '*',
     'Content-Type': 'application/json'
   },
 });

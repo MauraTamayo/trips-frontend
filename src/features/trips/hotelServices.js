@@ -17,7 +17,7 @@ import { hotelsClient } from '../../services/apiClient';
 
 export const listHotels = async () => {
 	try {
-		const response = await hotelsClient.get('/hotels');
+		const response = await hotelsClient.get('/hotels', {withCredentials: true,});
 		console.log("Lista de hoteles", response);
 		console.log("Lista de hoteles", response.status);
 		return response.data;
