@@ -3,7 +3,8 @@ import { authClient }  from '../../services/apiClient';
 
 export const register = async (data) => {
 	try {
-		const response = await authClient.post('/auth/signup', data);
+		const response = await authClient.post('/auth/signup', data, {withCredentials: true,});
+		console.log("response", response)
 		return response.data;
 	} catch (error) {
 		// Verificar si el error tiene respuesta y si es un error de cliente (400)
